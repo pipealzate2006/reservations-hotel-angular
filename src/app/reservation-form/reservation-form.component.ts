@@ -9,7 +9,7 @@ import {
 import { ReservationService } from '../reservation/reservation.service';
 import { Reservation } from '../models/reservation';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HomeComponent } from "../home/home.component";
+import { HomeComponent } from '../home/home.component';
 
 @Component({
   selector: 'app-reservation-form',
@@ -39,11 +39,14 @@ export class ReservationFormComponent implements OnInit {
     let id = this.activatedRoute.snapshot.paramMap.get('id');
 
     if (id) {
-      let reservation = this.reservationService.getReservationById(+id);
-
-      if (reservation) {
-        this.reservationForm.patchValue(reservation);
-      }
+      this.reservationService
+        .getReservationById(+id)
+        .subscribe((reservation) => {
+          if (reservation) {
+            console.log(reservation);
+            this.reservationForm.patchValue(reservation);
+          }
+        });
     }
   }
 
@@ -55,10 +58,14 @@ export class ReservationFormComponent implements OnInit {
 
       if (id) {
         // Update existing reservation
-        this.reservationService.updateReservation(+id, reservation);
+        this.reservationService.updateReservation(+id, reservation).subscribe(() => {
+          console.log('Update request processed successfully');
+        });
       } else {
         // Add a new reservation
-        this.reservationService.addReservation(reservation);
+        this.reservationService.addReservation(reservation).subscribe(() => {
+          console.log('Add request processed successfully');
+        });
       }
 
       this.router.navigate(['/list']);

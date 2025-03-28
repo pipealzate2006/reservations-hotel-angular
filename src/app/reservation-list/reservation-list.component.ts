@@ -3,7 +3,7 @@ import { ReservationService } from '../reservation/reservation.service';
 import { Reservation } from '../models/reservation';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { HomeComponent } from "../home/home.component";
+import { HomeComponent } from '../home/home.component';
 
 @Component({
   selector: 'app-reservation-list',
@@ -17,10 +17,14 @@ export class ReservationListComponent implements OnInit {
   constructor(private reservationService: ReservationService) {}
 
   ngOnInit(): void {
-    this.reservations = this.reservationService.getReservations();
+    this.reservationService.getReservations().subscribe((reservations) => {
+      this.reservations = reservations;
+    });
   }
 
   deleteReservation(id: number) {
-    this.reservationService.deleteReservation(id);
+    this.reservationService.deleteReservation(id).subscribe(() => {
+      console.log("Delete request got proccessed successfully");
+    });
   }
 }
